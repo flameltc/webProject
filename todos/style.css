@@ -1,0 +1,26 @@
+li input[type="text"]{
+    display: none
+}
+
+li.editing span{
+    display: none;
+}
+
+li.editing input[type="text"]{
+    display: inline-block;
+}
+
+li.completed{
+    text-decoration: line-through;
+}
+
+ul.active li.completed {
+    display: none
+}
+
+ul.completed li:not(.completed){
+    display: none
+}
+#todo-list{
+    list-style: decimal;
+}

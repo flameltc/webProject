@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>demo2</title>
+  <style>
+    html,
+    body,
+    div,
+    ul,
+    li {
+      padding: 0;
+      margin: 0;
+    }
+
+    div,span {
+      display: block;
+    }
+
+    body {
+      background-image: url(bg.jpg);
+    }
+
+    h1 {
+      font-size: 35px;
+      font-family: BebasNeueRegular, "Arial Narrow", Arial, sans-serif;
+      color: #1a5987;
+      opacity: 0.9;
+      text-align: center;
+      letter-spacing: -3px;
+      text-shadow: 0 0 1px darkturquoise;
+      font-weight: lighter;
+    }
+
+    h1 span {
+      color: #7cbcd6;
+    }
+
+    .demo {
+      display: block;
+      height: 100px;
+      width: 100vw;
+    }
+
+    .demo-list {
+      display: block;
+      width: 260px;
+      height: 70px;
+      margin: 0 auto;
+    }
+
+    .demo-list a li {
+      display: inline-block;
+      font-size: 12px;
+      font-family: Cambia, Palatino, "Palatino Linotype", "Palatino LT STD", Georgia, serif;
+      width: 60px;
+      height: 60px;
+      text-align: center;
+      line-height: 60px;
+      border-radius: 999px;
+      background-color: #68abc2;
+      box-shadow: 0 1px 3px grey;
+      font-style: italic;
+      color: #fff;
+      opacity: 0.5;
+    }
+
+    .demo-list a li:hover {
+      background-color: #4fa2c4;
+      opacity: 1;
+    }
+
+    .demo-list a {
+      text-decoration: none;
+    }
+
+    .demo-list a:nth-child(2) li {
+      background-color: #fff;
+      color: #68abc2;
+    }
+
+
+    .container {
+      height: 441px;
+      width: 100vw;
+    }
+
+    .content {
+      display: block;
+      height: 401px;
+      width: 601px;
+      background-color: #fff;
+      border: 20px solid #fff;
+      margin: 0 auto;
+      box-shadow: 0 5px 20px grey;
+      position: relative;
+      z-index: 1;
+    }
+
+    .content li {
+      display: block;
+      margin-right: 1px;
+      width: 149px;
+      height: 401px;
+      float: left;
+      position: relative;
+      overflow: hidden;  
+    }
+    .content li::before {
+      content: '';
+      position: absolute;
+      right: -1px;
+      width: 1px;
+      height: 401px;
+      z-index: 100;
+    }   
+
+    .content li div {
+      position: absolute;
+      width: 149px;
+      height: 401px;
+      background-repeat: no-repeat;
+      transition: left .5s ease;
+    }
+
+    div[class^="s1"] {
+      background-image: url(bg1.jpg);
+    }
+
+    div[class^="s2"] {
+      background-image: url(bg2.jpg);
+    }
+
+    div[class^="s3"] {
+      background-image: url(bg3.jpg);
+    }
+
+    div[class^="s4"] {
+      background-image: url(bg4.jpg);
+    }
+
+    div[class*="-1"] {
+      background-position: 0 0;
+    }
+
+    div[class*="-2"] {
+      background-position: -150px 0;
+    }
+
+    div[class*="-3"] {
+      background-position: -300px 0;
+    }
+
+    div[class*="-4"] {
+      background-position: -450px 0;
+    }
+
+    input {
+      display: none;
+    }
+
+    .la {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 350px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 24px;
+      z-index: 200;
+      color: #fff;
+    }
+
+    .la::before {
+      content: '';
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      box-shadow: 0 0 0 5px #ffffff4d;
+      background-color: #82c3d9e6;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin-left: -10px;
+      z-index: -100;
+    }
+
+    input:checked+*+*+*+li>label {
+      color: #82c3d9e6;
+    }
+
+    input:checked+*+*+*+li>label::before {
+      box-shadow: 0 0 0 5px #82c3d94d;
+      background-color: #fff;
+    }
+
+    #s1:checked~li [class^="s1"],
+    #s2:checked~li [class^="s2"],
+    #s3:checked~li [class^="s3"],
+    #s4:checked~li [class^="s4"] {
+      z-index: 200;
+      left: 0;
+      margin-left: 0px;
+    }
+
+    #s1:checked~li:nth-child(odd) div:not([class^="s1"]),
+    #s2:checked~li:nth-child(odd) div:not([class^="s2"]),
+    #s3:checked~li:nth-child(odd) div:not([class^="s3"]),
+    #s4:checked~li:nth-child(odd) div:not([class^="s4"])
+     {
+      z-index: 100;
+      left: -149px;
+      margin-left: 149px;
+      transition: z-index .5s, margin-left .5s ease, left .5s;
+    }
+    #s1:checked~li:nth-child(even) div:not([class^="s1"]),
+    #s2:checked~li:nth-child(even) div:not([class^="s2"]),
+    #s3:checked~li:nth-child(even) div:not([class^="s3"]),
+    #s4:checked~li:nth-child(even) div:not([class^="s4"])
+     {
+      z-index: 100;
+      left: 149px;
+      margin-left: -149px;
+      transition: z-index .5s, margin-left .5s ease, left .5s;
+    }
+
+    .para div {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 90px;
+      z-index: 300;
+      width: 600px;
+      height: 120px;
+      text-align: center;
+      color: #fff;
+      transition: font-size .5s, opacity .5s;
+    }
+    .para div [class*="-1"] {
+      font-family: BebasNeueRegular, "Arial Narrow", Arial, sans-serif;
+      line-height: 80px;
+      letter-spacing: 7px;
+    }
+    .para div [class*="-2"] {
+      width: 100%;
+      height: 36px;
+      line-height: 36px;
+      font-size: 14px;
+      background-color: #4fa2c4;
+    }
+    #s1:checked ~.para .p1,
+    #s2:checked ~.para .p2,
+    #s3:checked ~.para .p3,
+    #s4:checked ~.para .p4 {
+      opacity: 1;
+      font-size: 70px;
+
+    }
+    #s1:checked ~.para div:not([class="p1"]),
+    #s2:checked ~.para div:not([class="p2"]),
+    #s3:checked ~.para div:not([class="p3"]),
+    #s4:checked ~.para div:not([class="p4"]){
+      opacity: 0;
+      font-size: 30px;   
+    }
+  </style>
+</head>
+
+<body>
+  <h1>SLIDING IMAGE PANELS
+    <span>WITH CSS3</span>
+  </h1>
+  <div class="demo">
+    <ul class="demo-list">
+      <a href="index.html">
+        <li class="demo1">Demo1</li>
+      </a>
+      <a href="demo2.html">
+        <li class="demo2">Demo2</li>
+      </a>
+      <a href="demo3.html">
+        <li class="demo3">Demo3</li>
+      </a>
+      <a href="demo4.html">
+        <li class="demo4">Demo4</li>
+      </a>
+    </ul>
+  </div>
+  <div class="container">
+    <ul class="content">
+      <input type="radio" name="image" id="s1" checked>
+      <input type="radio" name="image" id="s2">
+      <input type="radio" name="image" id="s3">
+      <input type="radio" name="image" id="s4">
+      <li class="l1">
+        <div class="s1-1"></div>
+        <div class="s2-1"></div>
+        <div class="s3-1"></div>
+        <div class="s4-1"></div>
+        <label for="s1" class="la">1</label>
+      </li>
+      <li class="l2">
+        <div class="s1-2"></div>
+        <div class="s2-2"></div>
+        <div class="s3-2"></div>
+        <div class="s4-2"></div>
+        <label for="s2" class="la">2</label>
+      </li>
+      <li class="l3">
+        <div class="s1-3"></div>
+        <div class="s2-3"></div>
+        <div class="s3-3"></div>
+        <div class="s4-3"></div>
+        <label for="s3" class="la">3</label>
+      </li>
+      <li class="l4">
+        <div class="s1-4"></div>
+        <div class="s2-4"></div>
+        <div class="s3-4"></div>
+        <div class="s4-4"></div>
+        <label for="s4" class="la">4</label>
+      </li>
+      <div class="para">
+        <div class="p1">
+          <span class="p1-1">Serendipity</span>
+          <span class="p1-2">What you've been dreaming of</span>
+        </div>
+        <div class="p2">
+          <span class="p2-1">Adventure</span>
+          <span class="p2-2">Where the fun begins</span>
+        </div>
+        <div class="p3">
+          <span class="p3-1">Nature</span>
+          <span class="p4-2">Unforgettable eperiences</span>
+        </div>
+        <div class="p4">
+          <span class="p4-1">Serenity</span>
+          <span class="p4-2">When silence touches nature</span>
+        </div>
+      </div>
+    </ul>
+  </div>
+</body>
+
+</html>

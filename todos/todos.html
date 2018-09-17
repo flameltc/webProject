@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>todoList</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>todos</h1>
+        <input type="checkbox" class="done-all" id="done-all">
+        <input id="new-todo" placeholder="What needs to be done?" />
+    </header>
+    <section class="main">
+        <ul id="todo-list"></ul>
+
+        <div>
+            <span><span id="left-count">0</span> items left </span>
+            <span id="filter-wrapper">
+                <input type="radio" name="filter" value="all" checked>all
+                <input type="radio" name="filter" value="active">active
+                <input type="radio" name="filter" value="completed">completed
+            </span>
+            <button style="display:none;" id="clear-button">clear all completed</button>
+        </div>
+    </section>
+    
+
+    <script>
+        var placeholder = document.querySelector("#new-todo")
+        var todoList = document.querySelector("#todo-list")
+        var leftCount = document.querySelector("#left-count")
+        var toggleSelectAll=document.querySelector("#done-all")
+        var clearBtn=document.querySelector("#clear-button")
+        var wrapper=document.querySelector("#filter-wrapper")
+        placeholder.addEventListener("keyup", function (e) {
+            if (placeholder.value.trim() && e.keyCode === 13) {
+                addList(placeholder.value.trim())
+                // console.log(this)
+                clearData()
+                updateLeftItems()
+            }
+        })
+        
+        wrapper.addEventListener("change",function (e) {
+            var show =e.target.value
+            console.log(show)
+            todoList.className=show
+        })
+
+        toggleSelectAll.addEventListener("change",function (e) {
+            if(this.checked){
+                Array.from(todoList.querySelectorAll("input[type='checkbox']")).filter(it=>!it.checked).forEach(it=>it.click())
+            }else {
+                Array.from(todoList.querySelectorAll("input[type='checkbox']")).filter(it=>it.checked).forEach(it=>it.click())
+            }
+        })
+
+        //更新未完成todo的数量
+        function updateLeftItems() {
+            var checkBoxes=todoList.querySelectorAll('input[type="checkbox"]')
+            var c=Array.from(checkBoxes).filter(it=>!it.checked).length
+            leftCount.textContent=c
+            if(c===0){
+                toggleSelectAll.checked=true
+            }else {
+                toggleSelectAll.checked=false
+            }
+
+            if(c===checkBoxes.length){
+                clearBtn.style.display="none"
+            }else {
+                clearBtn.style.display="inline-block"
+            }
+        }
+
+        // 删除完成的todo
+        clearBtn.addEventListener("click",function (e) {
+            document.querySelectorAll("li.completed a").forEach(it=>it.click())
+        })
+
+        //
+
+        //添加todo
+        function addList(data) {
+            var tempLi = document.createElement("li")
+            var tempCheck = document.createElement("input")
+            var tempText=document.createElement("input")
+            var tempSpan = document.createElement("span")
+            var tempDel = document.createElement("a")
+
+            // tempText.className="edit"
+            tempCheck.type = "checkbox"
+            tempCheck.addEventListener("change",function () {
+                if(tempCheck.checked===true){
+                    tempLi.classList.add("completed")
+                }else {
+                    tempLi.classList.remove("completed")
+                }
+                updateLeftItems()
+            })
+            
+            tempText.type="text"
+            tempText.value=data
+            tempText.addEventListener("blur",function (e) {
+                tempLi.classList.remove("editing")
+                tempSpan.textContent=tempText.value.trim()
+            })
+            tempText.addEventListener("keyup",function (e) {
+                if(e.keyCode===13){
+                    this.blur()
+                }
+            })
+
+            tempSpan.textContent=data
+            tempSpan.addEventListener("dblclick",function (e) {
+                tempLi.classList.add("editing")
+                tempText.focus()
+            })
+            
+            tempDel.href="javascript:;"
+            tempDel.textContent = "x"
+            tempDel.addEventListener("click",function (e) {
+                tempDel.parentNode.parentNode.removeChild(tempDel.parentNode)
+                updateLeftItems()
+            })
+
+            tempLi.appendChild(tempCheck)
+            tempLi.appendChild(document.createTextNode("    "))
+            tempLi.appendChild(tempText)
+            tempLi.appendChild(document.createTextNode("    "))
+            tempLi.appendChild(tempSpan)
+            tempLi.appendChild(document.createTextNode("    "))
+            tempLi.appendChild(tempDel)
+            document.querySelector("#todo-list").appendChild(tempLi)
+        }
+
+        //清空数据
+        function clearData() {
+            placeholder.value = ""
+        }
+
+       
+    </script>
+</body>
+
+</html>
