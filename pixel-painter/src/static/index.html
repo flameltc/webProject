@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Pixel Painter</title>
+  <style>
+    .canvas {
+      border: 2px solid;
+      width: max-content;
+    }
+    .row {
+      display: flex;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border: 2px solid;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="canvas">
+      <canvas @click="handleCanvasClick" ref="canvas" :width="width" :height="height"></canvas>
+    </div>
+    <button @click="isPickingColor = !isPickingColor">{{ isPickingColor == true ? '正在取色' : '取色'}}</button>
+    <input type="color" v-model="color">
+    <label :style="{color: c.value}" v-for="c of commonColors">
+      <input type="radio" :value="c.value" v-model="color">{{c.name}}
+    </label>
+  </div>
+</body>
+<script src="vue.js"></script>
+<script>
+  const app = new Vue({
+    el:'#app',
+    data () {
+      return {
+        pixelData: [],
+        commonColors: [{
+          name:'red',
+          value: '#ff0000'
+        },{
+          name:'green',
+          value: '#00ff00'
+        },{
+          name: 'aqua',
+          value: '#00ffff'
+        },{
+          name: 'blue',
+          value: '#0000ff'
+        },{
+          name: 'black',
+          value: '#000000'
+        },{
+          name: 'white',
+          value: '#ffffff'
+        }],
+        color:'red',
+        width: 256,
+        height: 256,
+        isPickingColor: false,
+      }
+    },
+    methods: {
+      handleCanvasClick (e) {
+        if(this.isPickingColor){
+          this.pickColor(e)
+        } else {
+          this.drawDot(e)
+        }
+      },
+      pickColor(e){
+        var x = e.layerX
+        var y = e.layerY
+        var p = this.ctx.getImageData(x, y, 1, 1).data
+        var hexColor = this.rgba2hex(p)
+        this.color = hexColor      
+        this.isPickingColor = false
+      },
+      drawDot(e){
+        this.ws.send(JSON.stringify({
+          type: 'drawDot',
+          x: e.layerX,
+          y: e.layerY,
+          color: this.color,
+        }))
+      },
+      rgba2hex(dot){
+        var dot = Array.from(dot)
+        dot = dot.map(it => it.toString(16).padStart(2, '0'))
+        return '#' + dot[0] + dot[1] + dot[2]
+      }
+    },
+    mounted () {
+      var ws = new WebSocket('ws://localhost:3000/pixel')
+      this.ws = ws
+
+      var canvas = this.$refs.canvas
+      canvas.style.imageRendering = 'pixelated'
+      var ctx = canvas.getContext('2d')
+      this.ctx = ctx
+      ctx.webkitImageSmoothingEnabled = false
+      ctx.mozImageSmoothingEnabled = false
+      ctx.ImageSmoothingEnabled = false
+
+      ws.onmessage = (e) => {
+        var data = e.data
+        if(Object.prototype.toString.call(data) === '[object Blob]') {
+          console.log('blob data received')
+          var tmpURL = URL.createObjectURL(data)
+          var image = new Image()
+          image.src = tmpURL
+          image.onload = () => {
+              ctx.drawImage(image,0,0)
+          }
+        }else {
+          data = JSON.parse(data)
+          if (data.type == 'updateDot') {
+            ctx.fillStyle = data.color
+            ctx.fillRect(data.x, data.y, 1, 1)
+          }
+        }
+      }
+    }
+  })
+</script>
+</html>
