@@ -1,6 +1,6 @@
 # Piexel Painter
 
-##功能
+## 功能
 
 * 使用canvas绘制，节省内存提升性能
 * 使用websocket进行实时传输
